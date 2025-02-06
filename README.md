@@ -1,111 +1,106 @@
-# Proyecto: Aplicación Web Distribuida con Contenedores
+# 🍽️ Proyecto: Aplicación Web Distribuida para Restaurante Peruano 🇵🇪
 
-Este proyecto es una aplicación web distribuida que utiliza contenedores para facilitar su despliegue y ejecución. La aplicación consta de los siguientes componentes:
+Este proyecto es una aplicación web diseñada para la gestión de un restaurante peruano. La aplicación consta de un frontend en React, un backend en Node.js con Express, una base de datos MySQL gestionada a través de phpMyAdmin y un balanceador de carga configurado con NGINX. Todo el proyecto está dockerizado para facilitar su despliegue y ejecución. 🚀
 
-- **Frontend**: Aplicación en React que permite a los usuarios ingresar información sobre cómo cuidan a sus mascotas.
-- **Backend**: Servidor en Node.js con Express, que maneja las solicitudes HTTP y se conecta a la base de datos.
-- **Base de Datos**: MySQL, donde se almacena la información ingresada en los formularios.
-- **phpMyAdmin**: Interfaz web para gestionar la base de datos MySQL.
-- **NGINX**: Balanceador de carga que distribuye el tráfico entre múltiples instancias del frontend y backend.
+## 📌 Estructura del Proyecto
 
-## 📌 Requisitos Previos
+- **🎨 Frontend**: Aplicación React que permite a los usuarios realizar pedidos y gestionar información del restaurante.
+- **🖥️ Backend**: Servidor Node.js con Express que maneja las solicitudes HTTP y se conecta a la base de datos.
+- **🗄️ Base de Datos**: MySQL para almacenar la información de los pedidos y gestión del restaurante.
+- **⚙️ phpMyAdmin**: Interfaz web para gestionar la base de datos MySQL.
+- **🔀 NGINX**: Balanceador de carga que distribuye el tráfico entre múltiples instancias del frontend y backend.
 
-Para ejecutar este proyecto, necesitas tener instalados:
+## 🛠️ Requisitos Previos
 
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
+- Docker 🐳
+- Docker Compose ⚙️
 
-## 🚀 Configuración y Ejecución
+## 🚀 Construcción y Ejecución del Proyecto
 
 ### 1️⃣ Clonar el Repositorio
 
-Clona el repositorio en tu máquina local con el siguiente comando:
+Clona el repositorio del proyecto:
 
 ```bash
-git clone https://github.com/AlexisFarinango/Proyecto-AppDistribuidas.git
-cd Proyecto-AppDistribuidas
+git clone https://github.com/lenintoto/Distribuidas_proyectofinal.git
 ```
 
-### 2️⃣ Construcción y Ejecución de Contenedores
+### 2️⃣ Configuración del Entorno
 
-Ejecuta el siguiente comando para construir y levantar los contenedores:
+Asegúrate de tener Docker y Docker Compose instalados en tu sistema. Luego, construye y levanta los contenedores con el siguiente comando:
 
 ```bash
 docker-compose up --build
 ```
 
-Este comando generará las imágenes de Docker y levantará los servicios necesarios.
+Este comando construirá las imágenes de Docker y levantará los contenedores para el frontend, backend, base de datos, phpMyAdmin y NGINX.
 
-> ⚠ **Nota**: Es posible que los contenedores del backend y NGINX muestren errores inicialmente, ya que la base de datos aún no tiene la tabla requerida.
+#### ⚡ 2.1 Creación de la Base de Datos
 
-### 3️⃣ Configuración de la Base de Datos
+Para acceder a phpMyAdmin:
 
-Para solucionar el error anterior, accede a phpMyAdmin en [http://localhost:8080](http://localhost:8080) y ejecuta la siguiente consulta para crear la tabla en la base de datos `cuidado_mascotas`:
+🔗 [http://localhost:8080](http://localhost:8080)
 
-```sql
-CREATE TABLE formulario (
+Ejecuta el siguiente comando en phpMyAdmin para crear la tabla necesaria:
+
+```SQL
+CREATE TABLE pedidos (
   id INT NOT NULL AUTO_INCREMENT,
-  nombres VARCHAR(30) NOT NULL,
-  apellidos VARCHAR(30) NOT NULL,
-  direccion VARCHAR(30) NOT NULL,
-  edad INT NOT NULL,
-  genero VARCHAR(10) NOT NULL,
-  celular VARCHAR(10) NOT NULL,
-  comentarios TEXT NOT NULL,
+  nombre_cliente VARCHAR(50) NOT NULL,
+  direccion VARCHAR(100) NOT NULL,
+  telefono VARCHAR(15) NOT NULL,
+  plato VARCHAR(50) NOT NULL,
+  cantidad INT NOT NULL,
+  precio DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 ```
 
-### 4️⃣ Configuración de la Replicación de la Base de Datos
+#### 🔄 2.2 Configuración de Replicación de la Base de Datos
 
-#### 📍 Configuración en el Servidor Maestro (`db`)
+Ingresamos al gestor y ejecutamos el siguiente comando en la base principal "restaurante_db":
 
-Ejecuta el siguiente comando en la base de datos `cuidado_mascotas`:
-
-```sql
+```SQL
 SHOW MASTER STATUS;
 ```
 
-#### 📍 Configuración en el Servidor Esclavo (`db_replica`)
+En la base de datos esclava "restaurante_db_replica":
 
-Ejecuta los siguientes comandos en la base de datos `cuidado_mascotas`:
-
-```sql
+```SQL
 CHANGE MASTER TO MASTER_HOST = 'db', MASTER_USER = 'root', MASTER_PASSWORD = 'password';
 CHANGE MASTER TO MASTER_LOG_FILE = 'mysql-bin.000003', MASTER_LOG_POS = 491;
 START SLAVE;
 SHOW SLAVE STATUS;
 ```
 
-Después de esta configuración, los contenedores podrán ejecutarse sin problemas.
+Una vez configurado, se pueden reiniciar los contenedores para asegurar el correcto funcionamiento. ✅
 
-### 5️⃣ Acceso a la Aplicación
+### 3️⃣ Acceso a la Aplicación
 
-Una vez que los contenedores estén en ejecución, accede a la aplicación desde el navegador:
+Una vez que los contenedores estén en ejecución, puedes acceder a la aplicación en:
 
-- **Frontend**: [http://localhost](http://localhost)
-- **phpMyAdmin**: [http://localhost:8080](http://localhost:8080)
+🔗 **Frontend**: [http://localhost](http://localhost)
 
-## 🔧 Comandos Útiles
+### 4️⃣ Comandos Útiles 🛠️
 
-- **Detener y eliminar los contenedores**:
+- **🛑 Detener y eliminar los contenedores**:
   ```bash
   docker-compose down
   ```
 
-- **Ver logs de un contenedor**:
+- **📜 Ver logs de un contenedor**:
   ```bash
   docker logs <nombre_del_contenedor_o_id>
   ```
 
-- **Acceder a la terminal de un contenedor**:
+- **🔍 Acceder a la terminal de un contenedor**:
   ```bash
   docker exec -it <nombre_del_contenedor_o_id> bash
   ```
 
 ## ⚙️ Configuración de NGINX
 
-El archivo `nginx.conf` balancea el tráfico entre múltiples instancias del frontend y backend:
+El archivo `nginx.conf` está configurado para balancear el tráfico entre múltiples instancias del frontend y backend. Aquí está la configuración básica:
 
 ```nginx
 events {}
@@ -137,17 +132,11 @@ http {
 }
 ```
 
-## 📊 Pruebas de Rendimiento
+### 📊 Pruebas de Rendimiento 🚀
 
-Se realizaron pruebas de rendimiento utilizando **Apache JMeter** para evaluar la eficiencia del sistema:
-
-![Prueba 1](https://github.com/user-attachments/assets/d77f18b1-a4cd-45e9-857f-4c6fd37374eb)
-![Prueba 2](https://github.com/user-attachments/assets/87c283f2-f1e5-4d7c-b0e7-24575db2d9e6)
-![Prueba 3](https://github.com/user-attachments/assets/35af40d7-b3b1-4b61-bea2-f4ac802eeb64)
+Se realizaron pruebas de rendimiento con Apache JMeter para evaluar la eficiencia del sistema bajo carga. 📈
 
 ## 👥 Integrantes
 
-- **Lenin Gómez**
-- **Freddy Villavicencio**
-- **Alex Cárdenas**
-- **Alexis Farinango**
+- 🧑‍💻 Lenin Gómez
+- 🧑‍💻 Freddy Villavicencio
